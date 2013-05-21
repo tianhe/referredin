@@ -4,6 +4,8 @@ ruby '1.9.3'
 gem 'rails', '3.2.13'
 gem 'sass'
 gem 'haml'
+gem 'unicorn'
+gem 'rack-timeout'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
