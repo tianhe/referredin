@@ -1,0 +1,13 @@
+= link_to 'Industry', user_url(@user, facet: 'industry')
+= link_to 'Location', user_url(@user, facet: 'location')
+= link_to 'Country', user_url(@user, facet: 'country')
+
+%table.industry
+  %th
+    = @facet
+  %tbody
+  - @rankings.limit(10).each do |p|
+    %tr.profile
+      %td= p.facet
+      %td= p.count
+
