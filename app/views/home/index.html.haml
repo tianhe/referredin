@@ -1,9 +1,0 @@
-%table.industry
-  %th
-    @facet
-  %tbody
-  - @rankings.limit(10).each do |p|
-    %tr.profile
-      %td= p.facet
-      %td= p.count
-
