@@ -41,10 +41,7 @@ class User < ActiveRecord::Base
     authentication.user
   end
 
-  def handle_linkedin auth
-    client = LinkedIn::Client.new
-    client.authorize_from_access(auth['credentials']['token'], auth['credentials']['secret'])
-
+  def handle_linkedin client
     lnkd_profile = client.profile(fields: %w(id first_name last_name location industry picture_url public_profile_url summary specialties))
     connections = client.connections(fields: %w(id first_name last_name location industry picture_url public_profile_url num_connections summary))
 
@@ -52,6 +49,17 @@ class User < ActiveRecord::Base
     self.profile = subprofile.profile
 
     self.connect LinkedInHelper.parse_connections(connections.all)
+  end
+
+  def search_for_connections client, company
+    client.search(fields:  [{ :people => %w(id first-name last-name api-standard-profile-request)}],
+      company: company
+    )
+  end
+
+  def linkedin_client auth
+    client = LinkedIn::Client.new
+    client.authorize_from_access(auth['credentials']['token'], auth['credentials']['secret'])
   end
 
 end
