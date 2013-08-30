@@ -1,6 +1,8 @@
-= link_to 'Industry', user_url(@user, facet: 'industry')
-= link_to 'Location', user_url(@user, facet: 'location')
-= link_to 'Country', user_url(@user, facet: 'country')
+= link_to 'Industry',   user_url(@user, facet: 'industry')
+= link_to 'Location',   user_url(@user, facet: 'location')
+= link_to 'Country',    user_url(@user, facet: 'country')
+= link_to 'Connectors', user_url(@user, facet: 'connectors')
+= link_to "Sign out",   destroy_user_session_path, method: :delete
 
 %table.industry
   %th

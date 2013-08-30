@@ -10,7 +10,8 @@ class LinkedInHelper
       headline:           profile.headline,
       public_profile_url: profile.public_profile_url,
       provider:           'linkedin',
-      identifier:         profile.public_profile_url
+      identifier:         profile.public_profile_url,
+      num_connections:    profile.num_connections
     }
   end
 

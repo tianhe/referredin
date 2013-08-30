@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
       user = User.where(email: auth.info.email).first
       unless user
         user = User.create(email: auth.info.email, password:  Devise.friendly_token)
-        user.handle_linkedin(auth)
+        Resque.enqueue LinkUsersJob, user.id, auth
       end
       authentication.user = user
       authentication.save
@@ -43,13 +43,14 @@ class User < ActiveRecord::Base
 
   def handle_linkedin auth
     client = LinkedIn::Client.new
-    client.authorize_from_access(auth.credentials.token, auth.credentials.secret)
+    client.authorize_from_access(auth['credentials']['token'], auth['credentials']['secret'])
 
-    lnkd_profile = client.profile(fields: %w(id first_name last_name location industry picture_url public_profile_url))
-    subprofile = Subprofile.create LinkedInHelper.parse_profile(lnkd_profile)
+    lnkd_profile = client.profile(fields: %w(id first_name last_name location industry picture_url public_profile_url summary specialties))
+    connections = client.connections(fields: %w(id first_name last_name location industry picture_url public_profile_url num_connections summary))
+
+    subprofile = Subprofile.create LinkedInHelper.parse_profile(lnkd_profile).merge num_connections: connections.all.count
     self.profile = subprofile.profile
 
-    connections = client.connections(fields: %w(id first_name last_name location industry picture_url public_profile_url))
     self.connect LinkedInHelper.parse_connections(connections.all)
   end
 

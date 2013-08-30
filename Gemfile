@@ -6,6 +6,7 @@ gem 'sass'
 gem 'haml'
 gem 'unicorn'
 gem 'rack-timeout'
+gem 'resque'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'

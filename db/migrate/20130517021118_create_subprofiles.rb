@@ -12,6 +12,9 @@ class CreateSubprofiles < ActiveRecord::Migration
       t.string  :public_profile_url
       t.string  :provider
       t.string  :identifier
+      t.text :specialties
+      t.text :summary
+      t.integer :num_connections
 
       t.timestamps
     end

@@ -31,8 +31,9 @@ ActiveRecord::Schema.define(:version => 20130517052024) do
     t.string   "headline"
     t.string   "picture_url"
     t.integer  "user_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer  "num_linkedin_connections"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
 
   create_table "subprofiles", :force => true do |t|
@@ -47,6 +48,9 @@ ActiveRecord::Schema.define(:version => 20130517052024) do
     t.string   "public_profile_url"
     t.string   "provider"
     t.string   "identifier"
+    t.text     "specialties"
+    t.text     "summary"
+    t.integer  "num_connections"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
   end

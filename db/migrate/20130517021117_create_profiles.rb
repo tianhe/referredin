@@ -9,7 +9,7 @@ class CreateProfiles < ActiveRecord::Migration
       t.string  :headline
       t.string  :picture_url
       t.integer :user_id
-
+      t.integer :num_linkedin_connections
       t.timestamps
     end
   end
