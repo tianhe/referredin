@@ -14,12 +14,12 @@ class LinkUsersJob
 
     #Create User Profile
     user_profile_attrs = LinkedInHelper.parse_profile(profile)
-    user_profile_attrs.merge(num_connections: connections.count)
-    user_subprofile = Subprofile.create(user_profile_attrs)
+    user_profile_attrs.merge!(num_connections: connections.count)
+    user_subprofile = Subprofile.where(provider: user_profile_attrs[:provider], identifier: user_profile_attrs[:identifier]).first || Subprofile.create(user_profile_attrs)
     user.profile = user_subprofile.profile
 
     #Create Connections
-    connection_attrs = LinkedInHelper.parse_personal_connections(connections)
+    connection_attrs = LinkedInHelper.parse_profiles(connections)
     user.connect(connection_attrs)
 
     puts "Found #{connections.all.count} connections, Created profiles for: #{user.user_contacts.count}"
