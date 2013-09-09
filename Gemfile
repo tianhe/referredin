@@ -39,6 +39,10 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'fuubar'
   gem 'faker'
+  gem 'pry'
+  gem 'pry-remote'
+  gem 'debugger-pry', require: 'debugger/pry'
+  gem 'debugger'
 end
 
 # To use ActiveModel has_secure_password

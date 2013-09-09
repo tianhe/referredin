@@ -1,7 +1,10 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
   def linkedin
-    # You need to implement the method below in your model (e.g. app/models/user.rb)
-    @user = User.find_for_linkedin_oauth(request.env["omniauth.auth"])
+    auth = request.env["omniauth.auth"]
+    @user = User.find_with_linkedin_oauth(auth) ||  User.create_with_linkedin_oauth(auth)
+
+    Resque.enqueue LinkUsersJob, @user.id
 
     if @user.persisted?
       sign_in_and_redirect @user, event: :authentication #this will throw if @user is not activated

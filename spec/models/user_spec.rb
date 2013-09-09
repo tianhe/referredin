@@ -25,7 +25,7 @@ describe User do
     end
   end
 
-  context '#find_for_linkedin_oauth(auth)' do
+  context '#find_with_linkedin_oauth(auth)' do
     it 'should return user if provider and uid already exists' do
     end
 

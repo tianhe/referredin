@@ -25,41 +25,23 @@ class User < ActiveRecord::Base
     self.contacts = (self.contacts + profiles.compact).uniq
   end
 
-  def self.find_for_linkedin_oauth(auth)
-    authentication = Authentication.where(provider: auth.provider, uid: auth.uid).first_or_initialize
-
-    unless authentication.user
-      user = User.where(email: auth.info.email).first
-      unless user
-        user = User.create(email: auth.info.email, password:  Devise.friendly_token)
-        Resque.enqueue LinkUsersJob, user.id, auth
-      end
-      authentication.user = user
-      authentication.save
-    end
-
+  def self.find_with_linkedin_oauth auth
+    return unless authentication = Authentication.where(provider: auth.provider, uid: auth.uid).first
     authentication.user
   end
 
-  def handle_linkedin client
-    lnkd_profile = client.profile(fields: %w(id first_name last_name location industry picture_url public_profile_url summary specialties))
-    connections = client.connections(fields: %w(id first_name last_name location industry picture_url public_profile_url num_connections summary))
+  def self.create_with_linkedin_oauth auth
+    user = User.where(email: auth.info.email).first_or_initialize
+    user.password = Devise.friendly_token
+    user.save
 
-    subprofile = Subprofile.create LinkedInHelper.parse_profile(lnkd_profile).merge num_connections: connections.all.count
-    self.profile = subprofile.profile
+    authentication = Authentication.where(provider: auth.provider, uid: auth.uid).first_or_initialize
+    authentication.user = user
+    authentication.secret = auth['credentials']['secret']
+    authentication.token = auth['credentials']['token']
+    authentication.save
 
-    self.connect LinkedInHelper.parse_connections(connections.all)
-  end
-
-  def search_for_connections client, company
-    client.search(fields:  [{ :people => %w(id first-name last-name api-standard-profile-request)}],
-      company: company
-    )
-  end
-
-  def linkedin_client auth
-    client = LinkedIn::Client.new
-    client.authorize_from_access(auth['credentials']['token'], auth['credentials']['secret'])
+    user
   end
 
 end
