@@ -117,4 +117,14 @@ class LinkedInHelper
       end
     end
   end
+
+  def self.to_file(file_name, data)
+    columns = data.compact.map{ |r| r.keys }.flatten.uniq
+    CSV.open(file_name, 'wb') do |csv|
+      csv << columns
+      data.compact.each do |row|
+        csv << row.values_at(*columns)
+      end
+    end
+  end
 end
